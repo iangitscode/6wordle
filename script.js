@@ -10,8 +10,8 @@ const GREEN = "#00ad2e";
 const GREY = "#828583";
 
 const REFERENCE = new Date("02/07/2022");
-// const DAYS_SINCE_REFERENCE = Math.floor(((new Date()) - REFERENCE)/1000/3600/24);
-const DAYS_SINCE_REFERENCE = 4;
+const DAYS_SINCE_REFERENCE = Math.floor(((new Date()) - REFERENCE)/1000/3600/24);
+// const DAYS_SINCE_REFERENCE = 4;
 const secret = WORDS[DAYS_SINCE_REFERENCE % WORDS.length];
 let shouldListen = true;
 
@@ -19,6 +19,7 @@ const GREENBOX = "🟩";
 const YELLOWBOX = "🟨";
 const GREYBOX = "⬜";
 
+const TODAY_GUESS_LIST = "6wordle_today";
 const FAIL_DELIMITER = "X";
 
 function type(key) {
@@ -33,27 +34,11 @@ function type(key) {
     currWord = currWord.slice(0, -1);
     drawRow(currRow, currWord);
   } else if (input === "Enter") {
+    const input = currWord;
     if (currWord.length < 6) return;
     if (ALL_WORDS.includes(currWord)) {
       // Valid guess
-      saveGuessForToday(DAYS_SINCE_REFERENCE, currWord);
-      if (currWord === secret) {
-        // Correct guess
-        shouldListen = false;
-        correctGuess();
-      } else {
-        // Incorrect guess
-        incorrectGuess();
-        currRow++;
-        if (currRow < 6) {
-          // Still can play
-          currWord = "";    
-        } else {
-          // Out of lives
-          shouldListen = false;
-          loseGame();
-        }
-      }
+      inputGuess(currRow, currWord, true);
     } else {
       // Invalid guess
       invalidGuess();
@@ -63,7 +48,7 @@ function type(key) {
 
 function saveGuessForToday(dayIndex, guess) {
   let toWrite;
-  const data = window.localStorage.getItem("6wordle_today");
+  const data = window.localStorage.getItem(TODAY_GUESS_LIST);
   if (data === null || data.split(":")[0] != DAYS_SINCE_REFERENCE) {
     // Write new data
     toWrite = DAYS_SINCE_REFERENCE + ":" + guess;
@@ -73,16 +58,7 @@ function saveGuessForToday(dayIndex, guess) {
     guesses.push(guess);
     toWrite = DAYS_SINCE_REFERENCE + ":" + guesses.join();
   }
-  window.localStorage.setItem("6wordle_today", toWrite);
-}
-
-function correctGuess() {
-  inputGuess(currRow, currWord, true);
-  drawSummary();
-}
-
-function incorrectGuess() {
-  inputGuess(currRow, currWord, true);
+  window.localStorage.setItem(TODAY_GUESS_LIST, toWrite);
 }
 
 function invalidGuess() {
@@ -110,15 +86,18 @@ function loseGame() {
 }
 
 function drawSummary() {
+  shouldListen = false;
   setTimeout(() => {
     const score = (currRow === 6 ? FAIL_DELIMITER : (currRow + 1))
     saveScores(score);
 
     const pastScores = readScores();
     const numAttempts = pastScores.length;
-    const pastSolves = pastScores.filter(x => x != FAIL_DELIMITER); 
+    const pastSolves = pastScores.filter(x => x[1] != FAIL_DELIMITER); 
     const numSolves = pastSolves.length;
-    const avgSolve = Math.round(pastSolves.reduce((x,y)=>{return parseInt(x) + parseInt(y)}, 0) / numSolves * 100) / 100;
+    const avgSolve = numSolves > 0 ? 
+      Math.round(pastSolves.reduce((x,y)=>{return parseInt(x) + parseInt(y[1])}, 0) / numSolves * 100) / 100 
+      : ":(";
 
     document.getElementById("score").innerText += score + "/6";
     document.getElementById("attempts").innerText = numAttempts;
@@ -133,14 +112,16 @@ function drawSummary() {
 
 function saveScores(scoreToAdd) {
   const data = readScores();
-  data.push(scoreToAdd);
-  const toWrite = data.join();
+  if (data.filter(x => x[0] == DAYS_SINCE_REFERENCE).length === 0) {
+    data.push([DAYS_SINCE_REFERENCE, scoreToAdd]);
+  } 
+  const toWrite = data.map(x => x.join(":")).join(",");
   window.localStorage.setItem("6wordle_scores", toWrite);
 }
 
 function readScores() {
   const data = window.localStorage.getItem("6wordle_scores");
-  return data ? data.split(",") : [];
+  return data ? data.split(",").map(x => x.split(":")) : [];
 }
 
 function closePopup() {
@@ -148,7 +129,11 @@ function closePopup() {
 }
 
 function copyResults() {
-  let str = "";
+  let str = "6WORDLE ";
+  str += DAYS_SINCE_REFERENCE + " ";
+  const score = (currRow >= 6 ? FAIL_DELIMITER : (currRow + 1)) + "/6\n";
+  str += score;
+
   for (let arr of guesses) {
     let row = "";
     for (let box of arr) {
@@ -167,6 +152,8 @@ function copyResults() {
     str += row + "\n";
   }
 
+  str += "https://6wordle.com\n";
+
   let type = "text/plain";
   let blob = new Blob([str], { type });
   let data = [new ClipboardItem({ [type]: blob })];
@@ -182,6 +169,7 @@ function copyResults() {
 }
 
 function inputGuess(rowIndex, word, animate) {
+  saveGuessForToday(DAYS_SINCE_REFERENCE, word);
   const row = document.getElementsByClassName("row")[rowIndex];
   drawRow(rowIndex, word);
   let secretLeft = secret;
@@ -226,6 +214,13 @@ function inputGuess(rowIndex, word, animate) {
     }
     back.style.transform = "translate(0)";
   }
+
+  currRow++;
+  if (word === secret || currRow === 6) {
+    drawSummary();
+  } else {
+    currWord = "";
+  }
 }
 
 function drawRow(rowIndex, word) {
@@ -240,7 +235,8 @@ function drawRow(rowIndex, word) {
 }
 
 function tryToLoadForToday() {
-  const data = window.localStorage.getItem("6wordle_today");
+  const data = window.localStorage.getItem(TODAY_GUESS_LIST);
+  window.localStorage.setItem(TODAY_GUESS_LIST,"");
   if (data === null || data.split(":")[0] != DAYS_SINCE_REFERENCE) {
     return;
   }

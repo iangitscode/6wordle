@@ -75,7 +75,12 @@ body {
   font: 20px Arial, sans-serif;
 }
 
-.popup-title,.score {
+.popup-title {
+  font: bold 30px Arial, sans-serif; 
+  color: #cc9600;
+}
+
+.score {
   font: bold 30px Arial, sans-serif; 
 }
 
@@ -122,8 +127,16 @@ body {
   width: 75px;
   height: 75px;
   margin: 10px 15px;
-  border: 3px solid white;
+  border: 3px solid #cc9600;
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+.blue {
+  border-color: #03349c;
+}
+
+.blue-text {
+  color: #03349c;
 }
