@@ -88,7 +88,7 @@ function loseGame() {
 function drawSummary() {
   shouldListen = false;
   setTimeout(() => {
-    const score = (currRow === 6 ? FAIL_DELIMITER : (currRow + 1))
+    const score = (currRow === 6 ? FAIL_DELIMITER : (currRow))
     saveScores(score);
 
     const pastScores = readScores();
