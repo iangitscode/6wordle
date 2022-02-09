@@ -1,0 +1,129 @@
+body {
+  background-color: #333333;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+}
+
+.row {
+  display: flex;
+  margin: 30px 0;
+  font: bold 40px Arial, sans-serif;
+  color: white;
+}
+
+.cell {
+  border: 3px solid white;
+  height: 75px;
+  width: 75px;
+  margin: 0 5px;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.back {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  transition: transform 0.25s;
+  transform: translateY(-100%);
+}
+
+.text {
+  z-index: 1;
+}
+
+.message {
+  color: white;
+  font: bold 20px Arial, sans-serif;
+  opacity: 0;
+}
+
+.popup {
+  visibility: hidden;
+  opacity: 0;
+  transition: visibility 0s, opacity 0.5s linear;
+  z-index: 2;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  padding: 30px;
+  background-color: #222222;
+  color: white;
+}
+
+.popup-close {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  font-size: 20px;
+  cursor: pointer;
+}
+
+.popup-close:hover {
+  color: #d9d7d7;
+}
+
+.popup-row {
+  margin: 15px 0;
+  font: 20px Arial, sans-serif;
+}
+
+.popup-title,.score {
+  font: bold 30px Arial, sans-serif; 
+}
+
+.answer {
+  display: none;
+  background-color: white;
+  padding: 5px;
+  font: bold 20px Arial, sans-serif;
+  border-radius: 3px;
+}
+
+.shareButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #3773d4;
+  cursor: pointer;
+  border-radius: 3px;
+  color: white;
+  font: bold 20px Arial, sans-serif;
+  margin-top: 40px;
+  padding: 5px 10px;
+}
+
+.shareButton:hover {
+  background-color: #2a5cad;
+  color: #d9d7d7;
+}
+
+.shareIcon {
+  width: 30px;
+  height: 30px;
+}
+
+.title {
+  font: bold 45px Arial, sans-serif;
+  color: white;
+  display: flex;
+  border-bottom: 3px solid white;
+  padding-bottom: 15px;
+}
+
+.title-letter {
+  width: 75px;
+  height: 75px;
+  margin: 10px 15px;
+  border: 3px solid white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
