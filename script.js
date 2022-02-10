@@ -21,19 +21,25 @@ const GREYBOX = "⬜";
 
 const TODAY_GUESS_LIST = "6wordle_today";
 const FAIL_DELIMITER = "X";
+const BACKSPACE = "Backspace";
+const ENTER = "Enter";
 
 function type(key) {
+  inputLetter(key.key);
+}
+
+function inputLetter(key) {
   if (!shouldListen) return;
-  const input = key.key;
+  const input = key;
   if (LETTERS.includes(input.toLowerCase())) {
     if (currWord.length < 6) {
       currWord += input;
       drawRow(currRow, currWord);
     }
-  } else if (input === "Backspace") {
+  } else if (input === BACKSPACE) {
     currWord = currWord.slice(0, -1);
     drawRow(currRow, currWord);
-  } else if (input === "Enter") {
+  } else if (input === ENTER) {
     const input = currWord;
     if (currWord.length < 6) return;
     if (ALL_WORDS.includes(currWord)) {
@@ -180,15 +186,21 @@ function inputGuess(rowIndex, word, animate) {
     if (secret[i] == char) {
       paint[i] = 2;
       secretLeft = secretLeft.replace(char, "");
+      updateKeyInfo(char, 3);
     }
   }
 
   // remove right letter, wrong placement
   for (let i = 0; i < 6; i++) {
+    // do not downgrade correct letters
+    if (paint[i] === 2) continue;
     const char = word[i];
     if (secretLeft.includes(char)) {
       paint[i] = 1;
       secretLeft = secretLeft.replace(char, "");
+      updateKeyInfo(char, 2);
+    } else {
+      updateKeyInfo(char, 1);
     }
   }
 
@@ -234,6 +246,39 @@ function drawRow(rowIndex, word) {
   }
 }
 
+function clickKey(event) {
+  const key = event.path[0];
+  if (key.tagName === "BUTTON") {
+    let value = key.dataset.key;
+    if (value === "-") {
+      value = BACKSPACE;
+    } else if (value === "+") {
+      value = ENTER
+    }
+    inputLetter(value);
+  }
+}
+
+function updateKeyInfo(char, new_info) {
+  if (!char) return;
+  const key = document.getElementById(char);
+  const info = Math.max(new_info, parseInt(key.dataset.info));
+  key.setAttribute("data-info", info);
+  switch (info) {
+    case 0:
+      return;
+    case 1: 
+      key.style.backgroundColor = GREY;
+      return;
+    case 2: 
+      key.style.backgroundColor = YELLOW;
+      return;
+    case 3: 
+      key.style.backgroundColor = GREEN;
+      return;
+  }
+}
+
 function tryToLoadForToday() {
   const data = window.localStorage.getItem(TODAY_GUESS_LIST);
   window.localStorage.setItem(TODAY_GUESS_LIST,"");
@@ -250,5 +295,36 @@ function tryToLoadForToday() {
   }
 }
 
+function drawKeyboard() {
+  const keyboard = document.getElementById("keyboard");
+  const keysLayout = [
+    'qwertyuiop-',
+    'asdfghjkl+',
+    'zxcvbnm'
+  ];
+
+  keyboard.addEventListener("click",clickKey);
+
+  for (let i = 0; i < keysLayout.length; i++) {
+    const row = keyboard.children[i];
+    for (let char of keysLayout[i]) {
+      const button = document.createElement("button");
+      button.classList.add("key");
+      button.id = char;
+      if (char == '-') {
+        button.innerText = "\u27F5";
+      } else if (char == '+') {
+        button.innerText = "\u21B5";
+      } else {
+        button.innerText = char;
+      }
+      button.setAttribute("data-key",char);
+      button.setAttribute("data-info", 0);
+      row.appendChild(button);
+    }
+  }
+}
+
 document.addEventListener('keydown', type);
+drawKeyboard();
 tryToLoadForToday();

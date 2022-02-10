@@ -140,3 +140,15 @@ body {
 .blue-text {
   color: #03349c;
 }
+
+.keyboard-row {
+  display: flex;
+  justify-content: center;
+  margin: 10px 0;
+}
+
+.key {
+  font: 40px Courier New, monospace;
+  padding: 0 25px;
+  margin: 0 3px;
+}
