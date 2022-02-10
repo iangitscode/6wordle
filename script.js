@@ -166,12 +166,26 @@ function copyResults() {
 
   navigator.clipboard.writeText(str).then(
     () => {
-      console.log("success");
+      animateShareMessage(true);
     },
     () => {
-      console.log("failure");
+      animateShareMessage(false);
     }
   );
+}
+
+function animateShareMessage(success) {
+  const shareMessage = document.getElementById("share-message");
+  if (success) {
+    shareMessage.innerText = "Copied to clipboard.";  
+  } else {
+    shareMessage.innerText = "Failed to copy to clipboard.";
+  }
+  shareMessage.animate([
+      {opacity: 0},
+      {opacity: 1},
+      {opacity: 0}
+    ], 3000);
 }
 
 function inputGuess(rowIndex, word, animate) {

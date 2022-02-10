@@ -10,14 +10,14 @@ body {
 .row {
   display: flex;
   margin: 30px 0;
-  font: bold 40px Arial, sans-serif;
+  font: bold 30px Arial, sans-serif;
   color: white;
 }
 
 .cell {
   border: 3px solid white;
-  height: 75px;
-  width: 75px;
+  height: 50px;
+  width: 50px;
   margin: 0 5px;
   position: relative;
   display: flex;
@@ -92,7 +92,7 @@ body {
   border-radius: 3px;
 }
 
-.shareButton {
+.share-button {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -101,33 +101,37 @@ body {
   border-radius: 3px;
   color: white;
   font: bold 20px Arial, sans-serif;
-  margin-top: 40px;
   padding: 5px 10px;
 }
 
-.shareButton:hover {
+.share-button:hover {
   background-color: #2a5cad;
   color: #d9d7d7;
 }
 
-.shareIcon {
+.share-icon {
   width: 30px;
   height: 30px;
 }
 
+.share-message {
+  opacity: 0;
+}
+
 .title {
-  font: bold 45px Arial, sans-serif;
+  font: bold 35px Arial, sans-serif;
   color: white;
   display: flex;
   border-bottom: 3px solid white;
   padding-bottom: 15px;
+  margin-bottom: 10px;
 }
 
 .title-letter {
-  width: 75px;
-  height: 75px;
+  width: 50px;
+  height: 50px;
   margin: 10px 15px;
-  border: 3px solid #cc9600;
+  border: 7px solid #cc9600;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -148,7 +152,7 @@ body {
 }
 
 .key {
-  font: 40px Courier New, monospace;
-  padding: 0 25px;
-  margin: 0 3px;
+  font: 30px Courier New, monospace;
+  padding: 0 10px;
+  margin: 0 1px;
 }
