@@ -10,8 +10,8 @@ const GREEN = "#00ad2e";
 const GREY = "#828583";
 
 const REFERENCE = new Date("02/07/2022");
-const DAYS_SINCE_REFERENCE = Math.floor(((new Date()) - REFERENCE)/1000/3600/24);
-// const DAYS_SINCE_REFERENCE = 4;
+// const DAYS_SINCE_REFERENCE = Math.floor(((new Date()) - REFERENCE)/1000/3600/24);
+const DAYS_SINCE_REFERENCE = 13;
 const secret = WORDS[DAYS_SINCE_REFERENCE % WORDS.length];
 let shouldListen = true;
 
@@ -33,7 +33,7 @@ function inputLetter(key) {
   const input = key;
   if (LETTERS.includes(input.toLowerCase())) {
     if (currWord.length < 6) {
-      currWord += input;
+      currWord += input.toLowerCase();
       drawRow(currRow, currWord);
     }
   } else if (input === BACKSPACE) {
