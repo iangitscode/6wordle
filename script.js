@@ -136,7 +136,7 @@ function closePopup() {
 function copyResults() {
   let str = "6WORDLE ";
   str += DAYS_SINCE_REFERENCE + " ";
-  const score = (currRow >= 6 ? FAIL_DELIMITER : currRow) + "/6\n";
+  const score = (currRow > 6 ? FAIL_DELIMITER : currRow) + "/6\n";
   str += score;
 
   for (let arr of guesses) {
